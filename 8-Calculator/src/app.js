@@ -13,6 +13,8 @@ buttons.forEach((button) => {
   });
 });
 
+//Validator
+
 //Calculate
 equal.addEventListener("click", (e) => {
   if (screen.value == "") {
