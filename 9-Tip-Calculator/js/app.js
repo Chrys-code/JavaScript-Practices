@@ -3,18 +3,14 @@ const inputs = document.querySelectorAll("input"); //dev note: input price, inpu
 const form = document.querySelector("form");
 const resultsDOM = document.querySelector(".results");
 
-// Feedback
-
 //EventListeners
-form.addEventListener("submit", submit);
-
-function submit(e) {
+form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const serviceTip = document.querySelector("#input-service").value;
   const billed = new BillObject(inputs[0].value, serviceTip, inputs[1].value);
   billed.calculate();
-}
+});
 
 class BillObject {
   constructor(price, tip, person) {
