@@ -7,6 +7,7 @@ const clearButton = document.querySelector("#clear-list");
 
 //EventListeners
 document.addEventListener("DOMContentLoaded", getLocalStorage);
+document.addEventListener("DOMContentLoaded", handleItems);
 form.addEventListener("submit", addTodoItem);
 clearButton.addEventListener("click", clearItems);
 
@@ -24,7 +25,6 @@ function addTodoItem(e) {
   } else {
     writeToDoList(item);
     addItemToLocalStorage(item);
-    handleItems();
   }
   itemInput.value = "";
 }
@@ -52,7 +52,6 @@ function getLocalStorage() {
   todoList.forEach((item) => {
     insertToHTML(item);
   });
-  handleItems();
 }
 
 //Create list item
@@ -82,15 +81,15 @@ function handleItems() {
   items.forEach((item) => {
     item.addEventListener("click", (e) => {
       const targetEl = e.target;
-      if (targetEl.classList.contains("fa-check-circle")) {
+      if (targetEl.classList.contains("complete-item")) {
         item.classList.toggle("completed");
-      } else if (targetEl.classList.contains("fa-edit")) {
+      } else if (targetEl.classList.contains("edit-item")) {
         itemInput.value =
-          targetEl.parentElement.parentElement.parentElement.children[0].innerText;
-        removeItem(e);
+          targetEl.parentElement.parentElement.children[0].innerText;
+        item.classList.add("hideItem");
         removeToDoFromLocalStorage(e);
-      } else if (targetEl.classList.contains("far")) {
-        removeItem(e);
+      } else if (targetEl.classList.contains("delete-item")) {
+        item.classList.add("hideItem");
         removeToDoFromLocalStorage(e);
       }
     });
@@ -105,13 +104,8 @@ function clearItems() {
 }
 
 //Remove specific
-function removeItem(e) {
-  const target = e.target.parentElement.parentElement.parentElement;
-  target.classList.add("hideItem");
-}
-
 function removeToDoFromLocalStorage(e) {
-  const target = e.target.parentElement.parentElement.parentElement;
+  const target = e.target.parentElement.parentElement;
   let todoItems;
   if (localStorage.getItem("todoItems") === null) {
     todoItems = [];

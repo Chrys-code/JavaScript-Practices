@@ -65,3 +65,7 @@ body {
 .hideItem {
   display: none;
 }
+
+i {
+  pointer-events: none;
+}
