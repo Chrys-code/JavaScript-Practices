@@ -9,8 +9,21 @@ const questionList = document.querySelector("#questions-list");
 
 let counter = 0;
 
-//Create interface
+//Create
 const ui = new UI();
+
+//Get data from storage
+let data = ui.getDataFromLocalStorage();
+if (data.length > 0) {
+  counter = data[data.length - 1].id + 1;
+} else {
+  counter = 1;
+}
+
+//Write out data
+data.forEach((question) => {
+  ui.addQuestion(questionList, question);
+});
 
 //toggle question form
 openBtn.addEventListener("click", function () {
@@ -28,7 +41,6 @@ form.addEventListener("submit", (e) => {
   const question = inputs[0].value;
   const answer = inputs[1].value;
   const id = counter;
-
   if (
     inputs[0].value === null ||
     inputs[0].value == "" ||
@@ -43,8 +55,9 @@ form.addEventListener("submit", (e) => {
     }, 5000);
   } else {
     const customerQuestion = new Question(id, question, answer);
+    data.push(customerQuestion);
+    ui.saveToLocalStorage(data);
     counter++;
-    console.log(customerQuestion);
     ui.addQuestion(questionList, customerQuestion);
   }
 
@@ -63,8 +76,21 @@ questionList.addEventListener("click", (e) => {
     questionList.removeChild(target.parentElement.parentElement.parentElement);
     inputs[0].value = target.parentElement.parentElement.children[0].innerText;
     inputs[1].value = target.parentElement.previousElementSibling.innerText;
+
+    let id = target.dataset.id;
+    let tempData = data.filter((item) => {
+      return item.id !== parseInt(id);
+    });
+    data = tempData;
+    ui.saveToLocalStorage(data);
   } else if (target.classList.contains("delete-flashcard")) {
+    let id = target.dataset.id;
     questionList.removeChild(target.parentElement.parentElement.parentElement);
+    let tempData = data.filter((item) => {
+      return item.id !== parseInt(id);
+    });
+    data = tempData;
+    ui.saveToLocalStorage(data);
   }
 });
 
@@ -95,6 +121,23 @@ function UI() {
   //Hide
   UI.prototype.hideQuestion = function (element) {
     element.classList.remove("showItem");
+  };
+
+  UI.prototype.saveToLocalStorage = function (data) {
+    localStorage.clear(data);
+    const dataJSON = JSON.stringify(data);
+    console.log(dataJSON);
+    localStorage.setItem("flash-questions", dataJSON);
+  };
+
+  UI.prototype.getDataFromLocalStorage = function () {
+    let storageQuestions = localStorage.getItem("flash-questions");
+    if (storageQuestions) {
+      const storageQuestionsParsed = JSON.parse(storageQuestions);
+      return storageQuestionsParsed;
+    } else {
+      return (storageQuestions = []);
+    }
   };
 }
 
