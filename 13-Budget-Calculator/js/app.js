@@ -139,6 +139,7 @@ class UI {
 
     this.writeBalance();
   }
+  
 */
 
   //This wont work
