@@ -136,6 +136,7 @@ function draw() {
   drawBall();
   drawBrick();
   collisionDetection();
+  drawScore();
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx;
